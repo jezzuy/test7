@@ -19,6 +19,14 @@ RUN apt-get update && \
 RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl && \
     docker-php-ext-install mysqli imap gd zip
 
+# Set permissions and ownership for the web server
+COPY --chown=www-data:www-data --chmod=755 . /src
+RUN rm -rf /var/www/html && mv /src /var/www/html
+
+# Set permissions for the copied files
+RUN find /var/www/html/ -type d -exec chmod 755 {} \; && \
+    find /var/www/html/ -type f -exec chmod 644 {} \;
+
 # Set PHP configuration
 RUN echo "upload_max_filesize = 10M" > /usr/local/etc/php/conf.d/uploads.ini && \
     echo "post_max_size = 10M" >> /usr/local/etc/php/conf.d/uploads.ini && \
