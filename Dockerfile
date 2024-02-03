@@ -1,5 +1,7 @@
 FROM php:8.2-apache
 
+USER root
+
 # Combine apt-get update and apt-get install
 RUN apt-get update && \
     apt-get install -y \
@@ -18,10 +20,10 @@ RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl && \
     docker-php-ext-install mysqli imap gd zip
 
 # Set permissions for the web server
-#COPY . /src
-#RUN rm -rf /var/www/html && mv /src /var/www/html && \
-#    find /var/www/html/ -type d -exec chmod 755 {} \; && \
-#    find /var/www/html/ -type f -exec chmod 644 {} \;
+COPY . /src
+RUN rm -rf /var/www/html && mv /src /var/www/html && \
+    find /var/www/html/ -type d -exec chmod 755 {} \; && \
+    find /var/www/html/ -type f -exec chmod 644 {} \;
 
 # Set PHP configuration
 RUN echo "upload_max_filesize = 10M" > /usr/local/etc/php/conf.d/uploads.ini && \
