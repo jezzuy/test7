@@ -20,7 +20,7 @@ RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl && \
     docker-php-ext-install mysqli imap gd zip
 
 # Set permissions and ownership for the web server
-COPY --chown=www-data:www-data . /src
+COPY --chown=www-data:www-data --chmod=755 . /src
 USER www-data
 RUN rm -rf /var/www/html && mv /src /var/www/html && \
     chown -R www-data:www-data /var/www/html
